@@ -8,7 +8,7 @@ function App() {
   return (
     <Router>
       <div className="bg-zinc-900 min-h-screen">
-        <Navbar />
+        {/* <Navbar /> */}
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/movie/:id" element={<MovieDetail />} />

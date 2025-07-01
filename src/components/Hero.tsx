@@ -20,7 +20,7 @@ const Hero: React.FC<HeroProps> = ({ movieId }) => {
   if (!movie) return null;
 
   return (
-    <section className="relative h-[60vw] min-h-[400px] w-full flex items-end bg-black">
+    <section className="relative h-[60vw] min-h-[400px] w-full flex items-end  z-10">
       {trailerKey ? (
         <iframe
           className="absolute inset-0 w-full h-full object-cover z-0"
@@ -28,6 +28,7 @@ const Hero: React.FC<HeroProps> = ({ movieId }) => {
           title="Movie Trailer"
           allow="autoplay; encrypted-media"
           allowFullScreen
+          
         />
       ) : (
         <img
