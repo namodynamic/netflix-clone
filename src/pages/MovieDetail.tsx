@@ -28,7 +28,7 @@ const MovieDetail = () => {
   if (!movie) return <div className="p-4">Movie not found.</div>;
 
   return (
-    <div className="p-4 max-w-3xl mx-auto">
+    <div className="p-4 relative z-50 max-w-3xl mx-auto">
       <Link to="/" className="text-red-500 hover:underline">&larr; Back to Home</Link>
       <div className="flex flex-col md:flex-row mt-4 gap-8 bg-zinc-800 rounded-lg shadow-lg p-6">
         <img

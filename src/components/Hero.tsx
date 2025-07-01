@@ -5,14 +5,26 @@ interface HeroProps {
   movieId: number;
 }
 
+interface Movie {
+  title: string;
+  overview: string;
+  backdrop_path: string;
+}
+
+interface Video {
+  site: string;
+  type: string;
+  key: string;
+}
+
 const Hero: React.FC<HeroProps> = ({ movieId }) => {
-  const [movie, setMovie] = useState<any>(null);
+  const [movie, setMovie] = useState<Movie | null>(null);
   const [trailerKey, setTrailerKey] = useState<string | null>(null);
 
   useEffect(() => {
     fetchMovieDetail(String(movieId)).then(setMovie);
     fetchMovieVideos(String(movieId)).then((videos) => {
-      const trailer = videos.find((v: any) => v.site === "YouTube" && v.type === "Trailer");
+      const trailer = videos.find((v: Video) => v.site === "YouTube" && v.type === "Trailer");
       setTrailerKey(trailer ? trailer.key : null);
     });
   }, [movieId]);
@@ -20,10 +32,10 @@ const Hero: React.FC<HeroProps> = ({ movieId }) => {
   if (!movie) return null;
 
   return (
-    <section className="relative h-[60vw] min-h-[400px] w-full flex items-end  z-10">
+    <section className="relative h-[60vw] min-h-[400px] w-full flex items-center z-10 bg-black/60">
       {trailerKey ? (
         <iframe
-          className="absolute inset-0 w-full h-full object-cover z-0"
+          className="absolute inset-0 w-full h-full -top-20 object-cover z-0"
           src={`https://www.youtube.com/embed/${trailerKey}?autoplay=1&mute=1&controls=0&loop=1&playlist=${trailerKey}`}
           title="Movie Trailer"
           allow="autoplay; encrypted-media"
@@ -37,7 +49,7 @@ const Hero: React.FC<HeroProps> = ({ movieId }) => {
           className="absolute inset-0 w-full h-full object-cover z-0"
         />
       )}
-      <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/90 via-zinc-900/60 to-transparent z-10" />
+      <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-zinc-900/50 to-transparent z-10" />
       <div className="relative z-20 p-8 max-w-2xl">
         <h1 className="text-4xl md:text-5xl font-extrabold mb-4 drop-shadow-lg">{movie.title}</h1>
         <p className="mb-6 text-lg text-zinc-200 drop-shadow-md line-clamp-3">{movie.overview}</p>

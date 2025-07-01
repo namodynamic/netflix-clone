@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { fetchPopularMovies } from "../api/tmdb";
 import Hero from "../components/Hero";
@@ -24,13 +24,13 @@ const Home = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  const featuredMovie = movies[0];
+  const featuredMovie = movies[2];
   const top10 = movies.slice(0, 10);
 
   return (
     <div className="bg-zinc-900">
       {featuredMovie && <Hero movieId={featuredMovie.id} />}
-      <div className="px-8 mx-auto relative z-10">
+      <div className="px-8 mx-auto relative -mt-10 md:-mt-24 z-10">
         <h2 className="text-2xl font-bold mb-4">New on Netflix</h2>
         <div className="flex gap-4 overflow-x-auto pb-4">
           {loading
