@@ -10,6 +10,7 @@ import {
   Image,
   Clapperboard,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface HeroProps {
   movieId: number;
@@ -111,10 +112,10 @@ const Hero = ({ movieId }: HeroProps) => {
               <span>Play</span>
             </button>
 
-            <button className="flex items-center space-x-2 bg-gray-600/70 text-white px-6 py-3 rounded font-bold hover:bg-gray-600/90 transition-colors">
+            <Link to={`/movie/${movieId}`} className="flex items-center space-x-2 bg-gray-600/70 text-white px-6 py-3 rounded font-bold hover:bg-gray-600/90 transition-colors">
               <Info size={20} />
               <span>More Info</span>
-            </button>
+            </Link>
           </div>
         </div>
       </div>
