@@ -84,7 +84,7 @@ const Hero = ({ movieId }: HeroProps) => {
         <div className="max-w-2xl">
           <div className="mb-4">
             <span className="bg-red-600 text-white px-2 py-1 text-sm font-bold rounded">
-              N SERIES
+              N FILM
             </span>
           </div>
 

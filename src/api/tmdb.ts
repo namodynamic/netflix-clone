@@ -23,8 +23,13 @@ export const fetchMovieVideos = async (id: string) => {
   return res.data.results;
 };
 
-export const fetchTVShows = async () => {
+export const fetchPopularTVShows = async () => {
   const res = await axios.get(`${BASE_URL}/tv/popular?api_key=${API_KEY}`);
+  return res.data.results;
+};
+
+export const fetchTopTVShows = async () => {
+  const res = await axios.get(`${BASE_URL}/tv/top_rated?api_key=${API_KEY}`);
   return res.data.results;
 };
 
@@ -47,4 +52,9 @@ export const fetchMovieGenres = async () => {
 export const fetchMovieCredits = async (id: string) => {
   const res = await axios.get(`${BASE_URL}/movie/${id}/credits?api_key=${API_KEY}`);
   return res.data;
+};
+
+export const fetchMoviesByGenre = async (genreId: number) => {
+  const res = await axios.get(`${BASE_URL}/discover/movie?api_key=${API_KEY}&with_genres=${genreId}`);
+  return res.data.results;
 };
