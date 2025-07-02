@@ -1,86 +1,87 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { fetchPopularMovies } from "../api/tmdb";
-import Hero from "../components/Hero";
+"use client"
+
+import { useEffect, useState } from "react"
+import Hero from "../components/Hero"
+import MovieRow from "../components/MovieRow"
+import {  mockGames } from "../data/mockData"
+import { fetchPopularMovies, fetchTVShows } from "../api/tmdb"
 
 type Movie = {
   id: number;
   title: string;
   poster_path: string;
   vote_average: number;
+  release_date?: string;
+  genre_ids?: number[];
+  vote_count?: number;
+  first_air_date?: string;
 };
 
-const SkeletonCard = () => (
-  <div className="animate-pulse bg-zinc-800 rounded-lg h-72 w-full" />
-);
 
 const Home = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [tvShows, setTVShows] = useState<Movie[]>([]);
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetchPopularMovies()
-      .then((data) => setMovies(data))
-      .finally(() => setLoading(false));
-  }, []);
+     Promise.all([fetchPopularMovies(), fetchTVShows()])
+       .then(([moviesData, tvShowsData]) => {
+      setMovies(moviesData);
+      setTVShows(tvShowsData);
+    })
+       .finally(() => setLoading(false));
+   }, []);
 
-  const featuredMovie = movies[2];
-  const top10 = movies.slice(0, 10);
+  const featuredMovie = movies[0]
+  const top10Movies = movies.slice(0, 10)
+  const newOnNetflix = movies.slice(1, 11)
+  const continueWatching = movies.slice(15, 25)
+  const actionMovies = movies.filter((movie) => movie.genre_ids?.includes(28)).slice(0, 10)
+  const topPickMovies = [...movies]
+  .filter((movie) => (movie.vote_count ?? 0) >= 1000)
+  .sort((a, b) => (b.vote_count ?? 0) - (a.vote_count ?? 0))
+  .slice(0, 10)
+
+  const top10TVShows = tvShows.slice(0, 10)
+  const criticallyAcclaimed = tvShows.slice(5, 15)
 
   return (
-    <div className="bg-zinc-900">
+    <div className="bg-zinc-900 min-h-screen">
       {featuredMovie && <Hero movieId={featuredMovie.id} />}
-      <div className="px-8 mx-auto relative -mt-10 md:-mt-24 z-10">
-        <h2 className="text-2xl font-bold mb-4">New on Netflix</h2>
-        <div className="flex gap-4 overflow-x-auto pb-4">
-          {loading
-            ? Array.from({ length: 10 }).map((_, i) => <SkeletonCard key={i} />)
-            : movies.slice(1, 11).map((movie) => (
-                <Link to={`/movie/${movie.id}`} key={movie.id} className="group block min-w-[180px]">
-                  <div className="relative">
-                    <img
-                      src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                      alt={movie.title}
-                      className="rounded-lg shadow-md group-hover:scale-105 transition-transform duration-200"
-                    />
-                    <span className="absolute top-2 right-2 bg-zinc-900/80 text-yellow-400 text-xs px-2 py-1 rounded font-bold">
-                      ★ {movie.vote_average}
-                    </span>
-                  </div>
-                  <p className="mt-2 text-center text-sm font-medium truncate" title={movie.title}>
-                    {movie.title}
-                  </p>
-                </Link>
-              ))}
+
+      <div className="relative -mt-10 md:-mt-24 z-10">
+        <MovieRow title="New on Netflix" movies={newOnNetflix} loading={loading} />
+
+        <MovieRow title="Top 10 Movies Today" movies={top10Movies} showRanking={true} loading={loading} />
+
+        <MovieRow title="Top 10 TV Shows Today" movies={top10TVShows} showRanking={true} loading={loading} />
+
+        <MovieRow title="Critically Acclaimed TV Shows" movies={criticallyAcclaimed} loading={loading} />
+
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold mb-4 px-8">Popular Mobile Games for You</h2>
+          <div className="flex gap-4 overflow-x-auto pb-4 px-8">
+            {mockGames.map((game) => (
+              <div key={game.id} className="min-w-[120px] text-center">
+                <img
+                  src={game.icon || "/placeholder.svg"}
+                  alt={game.name}
+                  className="w-20 h-20 rounded-lg mx-auto mb-2"
+                />
+                <p className="text-xs font-medium">{game.name}</p>
+              </div>
+            ))}
+          </div>
         </div>
-        <h2 className="text-2xl font-bold mb-4 mt-8">Top 10 Movies</h2>
-        <div className="flex gap-6 overflow-x-auto pb-4">
-          {loading
-            ? Array.from({ length: 10 }).map((_, i) => <SkeletonCard key={i} />)
-            : top10.map((movie, idx) => (
-                <Link to={`/movie/${movie.id}`} key={movie.id} className="relative group block min-w-[200px]">
-                  <span className="absolute -left-8 top-1/2 -translate-y-1/2 text-[7rem] font-extrabold text-zinc-800 opacity-60 select-none z-10">
-                    {idx + 1}
-                  </span>
-                  <div className="relative z-20">
-                    <img
-                      src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                      alt={movie.title}
-                      className="rounded-lg shadow-md group-hover:scale-105 transition-transform duration-200"
-                    />
-                    {(idx < 3) && (
-                      <span className="absolute top-2 left-2 bg-red-600 text-white text-xs px-2 py-1 rounded font-bold">Recently Added</span>
-                    )}
-                  </div>
-                  <p className="mt-2 text-center text-sm font-medium truncate" title={movie.title}>
-                    {movie.title}
-                  </p>
-                </Link>
-              ))}
-        </div>
+
+        <MovieRow title="Get In on the Action" movies={actionMovies} loading={loading} />
+
+        <MovieRow title="Continue Watching" movies={continueWatching} loading={loading} />
+
+        <MovieRow title="Today's Top Picks for You" movies={topPickMovies} loading={loading} />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Home; 
+export default Home

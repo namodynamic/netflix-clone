@@ -17,3 +17,8 @@ export const fetchMovieVideos = async (id: string) => {
   const res = await axios.get(`${BASE_URL}/movie/${id}/videos?api_key=${API_KEY}`);
   return res.data.results;
 };
+
+export const fetchTVShows = async () => {
+  const res = await axios.get(`${BASE_URL}/tv/popular?api_key=${API_KEY}`);
+  return res.data.results;
+};
