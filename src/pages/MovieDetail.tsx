@@ -12,9 +12,15 @@ import {
   VolumeX,
   Volume2,
 } from "lucide-react";
-import { fetchMovieDetail, fetchMovieVideos, fetchSimilarMovies } from "../api/tmdb";
+import {
+  fetchMovieCredits,
+  fetchMovieDetail,
+  fetchMovieGenres,
+  fetchMovieVideos,
+  fetchSimilarMovies,
+} from "../api/tmdb";
 
-
+type Genre = { id: number; name: string };
 
 type MovieDetailType = {
   id: number;
@@ -24,12 +30,22 @@ type MovieDetailType = {
   release_date: string;
   vote_average: number;
   backdrop_path: string;
+  genres: Genre[];
 };
 
 interface Video {
   site: string;
   type: string;
   key: string;
+}
+
+interface CrewMember {
+  job: string;
+  name: string;
+}
+
+interface CastMember {
+  name: string;
 }
 
 const MovieDetail = () => {
@@ -40,6 +56,9 @@ const MovieDetail = () => {
   const [trailerKey, setTrailerKey] = useState<string | null>(null);
   const [isMuted, setIsMuted] = useState(false);
   const [similarMovies, setSimilarMovies] = useState<MovieDetailType[]>([]);
+  const [genres, setGenres] = useState<{ id: number; name: string }[]>([]);
+  const [director, setDirector] = useState<string | null>(null);
+  const [cast, setCast] = useState<string[]>([]);
 
   useEffect(() => {
     if (id) {
@@ -55,10 +74,23 @@ const MovieDetail = () => {
       });
 
       fetchSimilarMovies(id).then((data) => {
-      setSimilarMovies(data.slice(0, 6));
-    });
+        setSimilarMovies(data.slice(0, 6));
+      });
+
+      fetchMovieCredits(id).then((credits) => {
+        const directorObj = credits.crew.find(
+          (c: CrewMember) => c.job === "Director"
+        );
+        setDirector(directorObj ? directorObj.name : null);
+
+        setCast(credits.cast.slice(0, 10).map((c: CastMember) => c.name));
+      });
     }
   }, [id]);
+
+  useEffect(() => {
+    fetchMovieGenres().then(setGenres);
+  }, []);
 
   const toggleMute = () => {
     setIsMuted(!isMuted);
@@ -77,7 +109,6 @@ const MovieDetail = () => {
       </div>
     );
   }
-
 
   return (
     <div className="min-h-screen bg-black text-white overflow-hidden">
@@ -177,7 +208,11 @@ const MovieDetail = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                 <div>
                   <span className="text-gray-400">Genres: </span>
-                  <span>Action, Drama, Thriller</span>
+                  <span>
+                    {movie.genres && movie.genres.length > 0
+                      ? movie.genres.map((g) => g.name).join(", ")
+                      : "N/A"}
+                  </span>
                 </div>
                 <div>
                   <span className="text-gray-400">Rating: </span>
@@ -185,11 +220,11 @@ const MovieDetail = () => {
                 </div>
                 <div>
                   <span className="text-gray-400">Director: </span>
-                  <span>Christopher Nolan</span>
+                  <span>{director || "N/A"}</span>
                 </div>
                 <div>
                   <span className="text-gray-400">Cast: </span>
-                  <span>Leonardo DiCaprio, Marion Cotillard</span>
+                  <span>{cast.length > 0 ? cast.join(", ") : "N/A"}</span>
                 </div>
               </div>
             </div>
