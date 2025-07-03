@@ -89,7 +89,7 @@ const MovieRow = ({
                   }`}
                 >
                   {showRanking && (
-                    <span className="absolute left-0 top-1/2 -translate-y-1/2 text-[8rem] font-extrabold text-zinc-400 opacity-60 select-none z-50 pointer-events-none">
+                    <span className="absolute left-0 top-1/2 -translate-y-1/2 text-[9rem] font-extrabold text-zinc-400 opacity-60 select-none z-50 pointer-events-none">
                       {idx + 1}
                     </span>
                   )}
@@ -98,7 +98,7 @@ const MovieRow = ({
                     <img
                       src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
                       alt={movie.title}
-                      className="rounded-lg shadow-md group-hover:scale-105 transition-transform duration-200 w-full h-72 object-cover"
+                      className="rounded-lg shadow-md hover:scale-105 transition-transform duration-200 w-full h-42 object-fill"
                     />
 
                     <span className="absolute bottom-0 right-0 text-zinc-100 text-xs px-2 py-1 rounded font-bold">

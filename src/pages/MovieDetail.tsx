@@ -232,7 +232,7 @@ const MovieDetail = () => {
         </div>
       </div>
 
-      <div className="absolute z-50 top-40 right-4 md:right-8 flex gap-2">
+      <div className="absolute z-50 top-20 md:top-50 lg:top-120 right-4 md:right-8 flex gap-2">
         {trailerKey && (
           <button
             onClick={toggleMute}

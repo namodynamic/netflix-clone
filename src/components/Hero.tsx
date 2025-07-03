@@ -57,11 +57,11 @@ const Hero = ({ movieId }: HeroProps) => {
   };
 
   return (
-    <section className="relative h-screen">
+    <section className="relative h-screen bg-black">
       <div className="absolute inset-0">
         {trailerKey && showVideo ? (
           <iframe
-            className="absolute inset-0 w-full h-full -top-20 object-cover z-0"
+            className="absolute inset-0 w-full h-full -top-40 object-cover z-0"
             src={`https://www.youtube.com/embed/${trailerKey}?autoplay=1&mute=${
               isMuted ? 1 : 0
             }&controls=0&loop=1&playlist=${trailerKey}&rel=0&showinfo=0&modestbranding=1`}
@@ -80,7 +80,7 @@ const Hero = ({ movieId }: HeroProps) => {
         <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-transparent to-transparent" />
       </div>
 
-      <div className="relative z-10 flex items-center h-full px-8 md:px-16">
+      <div className="absolute z-10 flex top-40 md:top-60 h-full px-8 md:px-16">
         <div className="max-w-2xl">
           <div className="mb-4">
             <span className="bg-red-600 text-white px-2 py-1 text-sm font-bold rounded">
@@ -120,7 +120,7 @@ const Hero = ({ movieId }: HeroProps) => {
         </div>
       </div>
 
-      <div className="absolute z-50 bottom-56 right-4 md:right-8 flex gap-2">
+      <div className="absolute z-10 bottom-120 right-4 md:right-8 flex gap-2">
         {trailerKey && (
           <button
             onClick={toggleVideoDisplay}

@@ -75,7 +75,10 @@ const Home = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  const featuredMovie = popularMovies[0];
+  const featuredMovie =
+  popularMovies.length > 0
+    ? popularMovies[Math.floor(Math.random() * popularMovies.length)]
+    : undefined;
   const top10Movies = topRatedMovies.slice(0, 10);
   const newOnNetflix = [...popularMovies]
     .filter((movie) => movie.release_date)
@@ -114,10 +117,10 @@ const Home = () => {
   ];
 
   return (
-    <div className="bg-zinc-900 min-h-screen">
+    <main className="bg-zinc-900 min-h-screen overflow-hidden">
       {featuredMovie && <Hero movieId={featuredMovie.id} />}
 
-      <div className="relative -mt-10 md:-mt-24 z-10">
+      <div className="relative -mt-40 md:-mt-62 z-10">
         <MovieRow
           title="New on Netflix"
           movies={newOnNetflix}
@@ -186,7 +189,7 @@ const Home = () => {
           recentlyAddedIds={recentlyAddedIds}
         />
       </div>
-    </div>
+    </main>
   );
 };
 
