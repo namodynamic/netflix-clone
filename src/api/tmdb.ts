@@ -33,6 +33,21 @@ export const fetchTopTVShows = async () => {
   return res.data.results;
 };
 
+export const fetchTrendingTVShows = async () => {
+  const res = await axios.get(`${BASE_URL}/trending/tv/week?api_key=${API_KEY}`);
+  return res.data.results;
+}
+
+export const fetchTVShowDetail = async (id: string) => {
+  const res = await axios.get(`${BASE_URL}/tv/${id}?api_key=${API_KEY}`);
+  return res.data;
+};
+
+export const fetchTVShowVideos = async (series_id: string) => {
+  const res = await axios.get(`${BASE_URL}/tv/${series_id}/videos?api_key=${API_KEY}`);
+  return res.data.results;
+};
+
 export async function fetchSimilarMovies(movieId: string) {
   const res = await fetch(`https://api.themoviedb.org/3/movie/${movieId}/similar?api_key=${API_KEY}`);
   const data = await res.json();
