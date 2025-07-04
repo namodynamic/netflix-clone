@@ -78,3 +78,19 @@ export const fetchSeasonEpisodes = async (tvId: string | number, seasonNumber: n
   const res = await axios.get(`${BASE_URL}/tv/${tvId}/season/${seasonNumber}?api_key=${API_KEY}`);
   return res.data.episodes;
 };
+
+// Search functions
+export const searchMulti = async (query: string, page: number = 1) => {
+  const res = await axios.get(`${BASE_URL}/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}&page=${page}`);
+  return res.data;
+};
+
+export const searchMovies = async (query: string, page: number = 1) => {
+  const res = await axios.get(`${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}&page=${page}`);
+  return res.data;
+};
+
+export const searchTVShows = async (query: string, page: number = 1) => {
+  const res = await axios.get(`${BASE_URL}/search/tv?api_key=${API_KEY}&query=${encodeURIComponent(query)}&page=${page}`);
+  return res.data;
+};

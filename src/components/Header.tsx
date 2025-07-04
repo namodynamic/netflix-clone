@@ -6,17 +6,31 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Search, Bell, User, ChevronDown, Menu, X } from "lucide-react";
 
-interface HeaderProps {
-  searchQuery: string;
-  setSearchQuery: (query: string) => void;
-}
-
-const Header = ({ searchQuery, setSearchQuery }: HeaderProps) => {
+const Header = () => {
+  const [searchQuery, setSearchQuery] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Sync search query with URL params when on search page
+  useEffect(() => {
+    if (location.pathname === '/search') {
+      const params = new URLSearchParams(location.search);
+      const queryParam = params.get('q') || '';
+      setSearchQuery(queryParam);
+      
+      // Open search input if there's a query or if we're on search page
+      if (queryParam || location.pathname === '/search') {
+        setIsSearchOpen(true);
+      }
+    } else {
+      // Clear search when navigating away from search page
+      setSearchQuery('');
+      setIsSearchOpen(false);
+    }
+  }, [location]);
 
   // Close mobile menu when route changes
   useEffect(() => {
@@ -31,12 +45,27 @@ const Header = ({ searchQuery, setSearchQuery }: HeaderProps) => {
   };
 
   const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
     if (searchQuery.trim()) {
-      navigate("/search");
-      setIsSearchOpen(false);
+      navigate(`/search?q=${encodeURIComponent(searchQuery)}`)
+      setIsSearchOpen(false)
     }
-  };
+  }
+
+  const handleSearchInputChange = (value: string) => {
+    setSearchQuery(value)
+    
+    // immediately navigate when user starts typing (after first character)
+    if (value.trim() && location.pathname !== '/search') {
+      navigate(`/search?q=${encodeURIComponent(value)}`)
+    } else if (value.trim() && location.pathname === '/search') {
+      // Update URL params if already on search page
+      navigate(`/search?q=${encodeURIComponent(value)}`, { replace: true })
+    } else if (!value.trim() && location.pathname === '/search') {
+      // Clear query params if search is empty
+      navigate('/search', { replace: true })
+    }
+  }
 
   return (
     <header className="fixed top-0 w-full z-50 bg-gradient-to-b from-black/80 to-transparent">
@@ -113,7 +142,7 @@ const Header = ({ searchQuery, setSearchQuery }: HeaderProps) => {
                 <input
                   type="text"
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={(e) => handleSearchInputChange(e.target.value)}
                   placeholder="Search movies, TV shows..."
                   className="bg-black/70 border border-white/30 rounded px-3 py-1 text-sm w-30 md:w-64"
                   autoFocus

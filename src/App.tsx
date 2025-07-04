@@ -8,19 +8,16 @@ import Movies from "./pages/Movies";
 import MyList from "./pages/MyList";
 import Search from "./pages/Search";
 import Header from "./components/Header";
-import { useState } from "react";
 import TVShowDetail from "./pages/TVShowDetail";
 import { MyListProvider } from "./contexts/MyListContext";
 
 
 function App() {
- const [searchQuery, setSearchQuery] = useState("")
-
   return (
     <MyListProvider>
       <Router>
         <div className="bg-zinc-900 min-h-screen">
-          <Header searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+          <Header />
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/movie/:id" element={<MovieDetail />} />
@@ -28,7 +25,7 @@ function App() {
             <Route path="/tv-shows" element={<TVShows />} />
             <Route path="/movies" element={<Movies />} />
             <Route path="/my-list" element={<MyList />} />
-            <Route path="/search" element={<Search searchQuery={searchQuery} />} />
+            <Route path="/search" element={<Search />} />
           </Routes>
         </div>
       </Router>
