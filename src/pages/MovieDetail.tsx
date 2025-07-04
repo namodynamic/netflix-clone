@@ -16,7 +16,6 @@ import {
 import {
   fetchMovieCredits,
   fetchMovieDetail,
-  fetchMovieGenres,
   fetchMovieVideos,
   fetchSimilarMovies,
 } from "../api/tmdb";
@@ -58,7 +57,6 @@ const MovieDetail = () => {
   const [trailerKey, setTrailerKey] = useState<string | null>(null);
   const [isMuted, setIsMuted] = useState(false);
   const [similarMovies, setSimilarMovies] = useState<MovieDetailType[]>([]);
-  const [genres, setGenres] = useState<{ id: number; name: string }[]>([]);
   const [director, setDirector] = useState<string | null>(null);
   const [cast, setCast] = useState<string[]>([]);
 
@@ -90,9 +88,6 @@ const MovieDetail = () => {
     }
   }, [id]);
 
-  useEffect(() => {
-    fetchMovieGenres().then(setGenres);
-  }, []);
 
   const toggleMute = () => {
     setIsMuted(!isMuted);
