@@ -9,6 +9,7 @@ import MyList from "./pages/MyList";
 import Search from "./pages/Search";
 import Header from "./components/Header";
 import { useState } from "react";
+import TVShowDetail from "./pages/TVShowDetail";
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/movie/:id" element={<MovieDetail />} />
+          <Route path="/tv/:id" element={<TVShowDetail />} />
           <Route path="/tv-shows" element={<TVShows />} />
           <Route path="/movies" element={<Movies />} />
           <Route path="/my-list" element={<MyList />} />

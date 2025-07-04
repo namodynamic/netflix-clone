@@ -73,3 +73,8 @@ export const fetchMoviesByGenre = async (genreId: number) => {
   const res = await axios.get(`${BASE_URL}/discover/movie?api_key=${API_KEY}&with_genres=${genreId}`);
   return res.data.results;
 };
+
+export const fetchSeasonEpisodes = async (tvId: string | number, seasonNumber: number) => {
+  const res = await axios.get(`${BASE_URL}/tv/${tvId}/season/${seasonNumber}?api_key=${API_KEY}`);
+  return res.data.episodes;
+};

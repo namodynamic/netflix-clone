@@ -13,6 +13,7 @@ interface Movie {
   genre_ids?: number[];
   vote_count?: number;
   first_air_date?: string;
+  name?: string;
 }
 
 interface MovieRowProps {
@@ -82,9 +83,9 @@ const MovieRow = ({
             ? Array.from({ length: 10 }).map((_, i) => <SkeletonCard key={i} />)
             : movies.map((movie, idx) => (
                 <Link
-                  to={`/movie/${movie.id}`}
+                  to={movie.name ? `/tv/${movie.id}` : `/movie/${movie.id}`}
                   key={movie.id}
-                  className={`group block min-w-[180px] ${
+                  className={`group block min-w-[200px] ${
                     showRanking ? "relative" : ""
                   }`}
                 >
