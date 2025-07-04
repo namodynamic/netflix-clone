@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import {
   Play,
   Plus,
+  Check,
   ThumbsUp,
   ThumbsDown,
   Share,
@@ -19,6 +20,7 @@ import {
   fetchMovieVideos,
   fetchSimilarMovies,
 } from "../api/tmdb";
+import { useMyList } from "../contexts/useMyList";
 
 type Genre = { id: number; name: string };
 
@@ -50,9 +52,9 @@ interface CastMember {
 
 const MovieDetail = () => {
   const { id } = useParams<{ id: string }>();
+  const { addToMyList, removeFromMyList, isInMyList } = useMyList();
   const [movie, setMovie] = useState<MovieDetailType | null>(null);
   const [loading, setLoading] = useState(true);
-  const [isInMyList, setIsInMyList] = useState(false);
   const [trailerKey, setTrailerKey] = useState<string | null>(null);
   const [isMuted, setIsMuted] = useState(false);
   const [similarMovies, setSimilarMovies] = useState<MovieDetailType[]>([]);
@@ -109,6 +111,26 @@ const MovieDetail = () => {
       </div>
     );
   }
+
+  const handleMyListClick = () => {
+  if (!movie) return;
+
+  if (isInMyList(movie.id)) {
+    removeFromMyList(movie.id);
+  } else {
+    addToMyList({
+      id: movie.id,
+      title: movie.title,
+      poster_path: movie.poster_path,
+      backdrop_path: movie.backdrop_path,
+      vote_average: movie.vote_average,
+      release_date: movie.release_date,
+      overview: movie.overview,
+      type: 'movie',
+      genre_ids: movie.genres?.map(g => g.id) || []
+    });
+  }
+ };
 
   return (
     <div className="min-h-screen bg-black text-white overflow-hidden">
@@ -178,14 +200,15 @@ const MovieDetail = () => {
                 </button>
 
                 <button
-                  onClick={() => setIsInMyList(!isInMyList)}
+                  onClick={handleMyListClick}
                   className={`p-3 rounded-full border-2 transition-colors ${
-                    isInMyList
+                    movie && isInMyList(movie.id)
                       ? "bg-white text-black border-white"
                       : "border-gray-400 hover:border-white"
                   }`}
+                  title={movie && isInMyList(movie.id) ? "Remove from My List" : "Add to My List"}
                 >
-                  <Plus size={20} />
+                  {movie && isInMyList(movie.id) ? <Check size={20} /> : <Plus size={20} />}
                 </button>
 
                 <button className="p-3 rounded-full border-2 border-gray-400 hover:border-white transition-colors">

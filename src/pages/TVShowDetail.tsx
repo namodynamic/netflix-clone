@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import {
   Play,
   Plus,
+  Check,
   ThumbsUp,
   ThumbsDown,
   Share,
@@ -20,6 +21,7 @@ import {
   fetchTVShowVideos,
 } from "../api/tmdb";
 import type { Episode, Season, TVShow } from "../types";
+import { useMyList } from "../contexts/useMyList";
 
 interface Video {
   site: string;
@@ -29,12 +31,12 @@ interface Video {
 
 const TVShowDetail = () => {
   const { id } = useParams<{ id: string }>();
+  const { addToMyList, removeFromMyList, isInMyList } = useMyList();
   const [loading, setLoading] = useState(true);
   const [tvShow, setTVShow] = useState<TVShow | null>(null);
   const [trailerKey, setTrailerKey] = useState<string | null>(null);
   const [selectedSeason, setSelectedSeason] = useState<Season | null>(null);
   const [episodes, setEpisodes] = useState<Episode[] | null>(null);
-  const [isInMyList, setIsInMyList] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [activeTab, setActiveTab] = useState<"episodes" | "details">(
     "episodes"
@@ -99,6 +101,26 @@ const TVShowDetail = () => {
 
   const toggleMute = () => {
     setIsMuted(!isMuted);
+  };
+
+  const handleAddToMyList = () => {
+    if (!tvShow) return;
+
+    if (isInMyList(tvShow.id)) {
+      removeFromMyList(tvShow.id);
+    } else {
+      addToMyList({
+        id: tvShow.id,
+        name: tvShow.name,
+        poster_path: tvShow.poster_path,
+        backdrop_path: tvShow.backdrop_path,
+        vote_average: tvShow.vote_average,
+        first_air_date: tvShow.first_air_date,
+        overview: tvShow.overview,
+        type: "tv",
+        genre_ids: tvShow.genres?.map((g) => g.id) || [],
+      });
+    }
   };
 
   return (
@@ -216,14 +238,23 @@ const TVShowDetail = () => {
                 </button>
 
                 <button
-                  onClick={() => setIsInMyList(!isInMyList)}
+                  onClick={handleAddToMyList}
                   className={`p-3 rounded-full border-2 transition-colors ${
-                    isInMyList
+                    tvShow && isInMyList(tvShow.id)
                       ? "bg-white text-black border-white"
                       : "border-gray-400 hover:border-white"
                   }`}
+                  title={
+                    tvShow && isInMyList(tvShow.id)
+                      ? "Remove from My List"
+                      : "Add to My List"
+                  }
                 >
-                  <Plus size={20} />
+                  {tvShow && isInMyList(tvShow.id) ? (
+                    <Check size={20} />
+                  ) : (
+                    <Plus size={20} />
+                  )}
                 </button>
 
                 <button className="p-3 rounded-full border-2 border-gray-400 hover:border-white transition-colors">
