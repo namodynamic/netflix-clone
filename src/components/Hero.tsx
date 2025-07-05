@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { fetchMovieDetail, fetchMovieVideos } from "../api/tmdb";
 import {
   Play,
@@ -11,29 +11,19 @@ import {
   Clapperboard,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import YouTube from "react-youtube";
+import type { YouTubePlayer } from "react-youtube";
+import type { Movie, Video } from "../types";
 
 interface HeroProps {
   movieId: number;
 }
 
-interface Movie {
-  title: string;
-  overview: string;
-  backdrop_path: string;
-  vote_average: number;
-  release_date: string;
-}
-
-interface Video {
-  site: string;
-  type: string;
-  key: string;
-}
-
 const Hero = ({ movieId }: HeroProps) => {
+  const playerRef = useRef<YouTubePlayer | null>(null);
   const [movie, setMovie] = useState<Movie | null>(null);
   const [trailerKey, setTrailerKey] = useState<string | null>(null);
-  const [isMuted, setIsMuted] = useState(true);
+  const [isMuted, setIsMuted] = useState<boolean>(true);
   const [showVideo, setShowVideo] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -53,6 +43,16 @@ const Hero = ({ movieId }: HeroProps) => {
       .finally(() => setIsLoading(false));
   }, [movieId]);
 
+  useEffect(() => {
+    if (playerRef.current) {
+      if (showVideo) {
+        playerRef.current.playVideo();
+      } else {
+        playerRef.current.pauseVideo();
+      }
+    }
+  }, [showVideo]);
+
   if (isLoading) {
     return (
       <section className="relative h-screen bg-zinc-900 animate-pulse">
@@ -64,7 +64,17 @@ const Hero = ({ movieId }: HeroProps) => {
   if (!movie) return null;
 
   const toggleMute = () => {
-    setIsMuted(!isMuted);
+    setIsMuted((prev) => {
+      const newMuted = !prev;
+      if (playerRef.current) {
+        if (newMuted) {
+          playerRef.current.mute();
+        } else {
+          playerRef.current.unMute();
+        }
+      }
+      return newMuted;
+    });
   };
 
   const toggleVideoDisplay = () => {
@@ -72,25 +82,44 @@ const Hero = ({ movieId }: HeroProps) => {
   };
 
   return (
-    <section className="relative h-[60vw] bg-zinc-950">
+    <section className="relative h-[60vw] bg-zinc-950 z-0">
       <div className="absolute inset-0">
-        {trailerKey && showVideo ? (
-          <iframe
-            className="absolute inset-0 w-full h-full md:-top-20 scale-120 object-cover"
-            src={`https://www.youtube.com/embed/${trailerKey}?autoplay=1&mute=${
-              isMuted ? 1 : 0
-            }&controls=0&loop=1&playlist=${trailerKey}&rel=0&showinfo=0&modestbranding=1&start=0`}
-            title="Movie Trailer"
-            allow="autoplay; encrypted-media"
-            allowFullScreen
-          />
-        ) : (
-          <img
-            src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
-            alt={movie.title}
-            className="absolute inset-0 w-full h-full object-cover z-0"
+        {trailerKey && (
+          <YouTube
+            videoId={trailerKey}
+            iframeClassName={`absolute inset-0 w-full h-full -top-10 scale-120 lg:-top-20 object-cover transition-opacity duration-300 ${
+              showVideo ? "opacity-100 visible" : "opacity-0 invisible"
+            }`}
+            opts={{
+              playerVars: {
+                autoplay: 1,
+                controls: 0,
+                loop: 1,
+                playlist: trailerKey,
+                rel: 0,
+                showinfo: 0,
+                modestbranding: 1,
+              },
+            }}
+            title="Trailer Video"
+            onReady={(event) => {
+              playerRef.current = event.target;
+              if (isMuted) {
+                event.target.mute();
+              } else {
+                event.target.unMute();
+              }
+            }}
           />
         )}
+
+        <img
+          src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
+          alt={movie.title}
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${
+            showVideo ? "opacity-0 invisible" : "opacity-100 visible"
+          }`}
+        />
 
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />

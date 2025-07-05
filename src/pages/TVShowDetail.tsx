@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Play,
   Plus,
@@ -20,17 +20,15 @@ import {
   fetchTVShowDetail,
   fetchTVShowVideos,
 } from "../api/tmdb";
-import type { Episode, Season, TVShow } from "../types";
+import type { Episode, Season, TVShow, Video } from "../types";
 import { useMyList } from "../contexts/useMyList";
+import YouTube from "react-youtube";
+import type { YouTubePlayer } from "react-youtube";
 
-interface Video {
-  site: string;
-  type: string;
-  key: string;
-}
 
 const TVShowDetail = () => {
   const { id } = useParams<{ id: string }>();
+  const playerRef = useRef<YouTubePlayer | null>(null);
   const { addToMyList, removeFromMyList, isInMyList } = useMyList();
   const [loading, setLoading] = useState(true);
   const [tvShow, setTVShow] = useState<TVShow | null>(null);
@@ -100,7 +98,17 @@ const TVShowDetail = () => {
   };
 
   const toggleMute = () => {
-    setIsMuted(!isMuted);
+    setIsMuted((prev) => {
+      const newMuted = !prev;
+      if (playerRef.current) {
+        if (newMuted) {
+          playerRef.current.mute();
+        } else {
+          playerRef.current.unMute();
+        }
+      }
+      return newMuted;
+    });
   };
 
   const handleAddToMyList = () => {
@@ -128,22 +136,37 @@ const TVShowDetail = () => {
       <div className="relative">
         <Link
           to="/"
-          className="absolute top-4 left-4 z-10 bg-black/50 p-2 rounded-full hover:bg-black/70 transition-colors"
+          className="fixed top-20 left-4 z-20 bg-black/50 p-2 rounded-full hover:bg-black/70 transition-colors"
         >
           <ArrowLeft size={24} />
         </Link>
 
         <div className="h-[60vw] md:h-[500px] z-0">
           {trailerKey ? (
-            <div className="aspect-video w-full md:-top-40 absolute">
-              <iframe
-                src={`https://www.youtube.com/embed/${trailerKey}?autoplay=1&mute=${
-                  isMuted ? 1 : 0
-                }&controls=0&loop=1&playlist=${trailerKey}&rel=0&showinfo=0&modestbranding=1`}
+            <div className="aspect-video w-full lg:-top-40 absolute">
+              <YouTube
+                videoId={trailerKey}
+                iframeClassName="aspect-video w-full h-full"
+                opts={{
+                  playerVars: {
+                    autoplay: 1,
+                    controls: 0,
+                    loop: 1,
+                    playlist: trailerKey,
+                    rel: 0,
+                    showinfo: 0,
+                    modestbranding: 1,
+                  },
+                }}
                 title="Trailer Video"
-                allow="autoplay; encrypted-media"
-                allowFullScreen
-                className="w-full h-full rounded-lg"
+                onReady={(event) => {
+                  playerRef.current = event.target;
+                  if (isMuted) {
+                    event.target.mute();
+                  } else {
+                    event.target.unMute();
+                  }
+                }}
               />
             </div>
           ) : (
@@ -289,7 +312,7 @@ const TVShowDetail = () => {
         </div>
       </div>
 
-      <div className="absolute z-50 top-40 md:top-50 lg:top-120 right-4 md:right-8 flex gap-2">
+      <div className="absolute z-10 top-40 md:top-50 lg:top-120 right-4 md:right-8 flex gap-2">
         {trailerKey && (
           <button
             onClick={toggleMute}

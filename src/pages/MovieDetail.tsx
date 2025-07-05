@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Play,
   Plus,
@@ -20,25 +20,10 @@ import {
   fetchSimilarMovies,
 } from "../api/tmdb";
 import { useMyList } from "../contexts/useMyList";
+import YouTube from "react-youtube";
+import type { YouTubePlayer } from "react-youtube";
+import type { MovieDetailType, Video } from "../types";
 
-type Genre = { id: number; name: string };
-
-type MovieDetailType = {
-  id: number;
-  title: string;
-  overview: string;
-  poster_path: string;
-  release_date: string;
-  vote_average: number;
-  backdrop_path: string;
-  genres: Genre[];
-};
-
-interface Video {
-  site: string;
-  type: string;
-  key: string;
-}
 
 interface CrewMember {
   job: string;
@@ -51,6 +36,7 @@ interface CastMember {
 
 const MovieDetail = () => {
   const { id } = useParams<{ id: string }>();
+  const playerRef = useRef<YouTubePlayer | null>(null);
   const { addToMyList, removeFromMyList, isInMyList } = useMyList();
   const [movie, setMovie] = useState<MovieDetailType | null>(null);
   const [loading, setLoading] = useState(true);
@@ -88,9 +74,18 @@ const MovieDetail = () => {
     }
   }, [id]);
 
-
   const toggleMute = () => {
-    setIsMuted(!isMuted);
+    setIsMuted((prev) => {
+      const newMuted = !prev;
+      if (playerRef.current) {
+        if (newMuted) {
+          playerRef.current.mute();
+        } else {
+          playerRef.current.unMute();
+        }
+      }
+      return newMuted;
+    });
   };
 
   if (loading)
@@ -107,47 +102,62 @@ const MovieDetail = () => {
     );
   }
 
-  const handleMyListClick = () => {
-  if (!movie) return;
+  const handleAddToMyList = () => {
+    if (!movie) return;
 
-  if (isInMyList(movie.id)) {
-    removeFromMyList(movie.id);
-  } else {
-    addToMyList({
-      id: movie.id,
-      title: movie.title,
-      poster_path: movie.poster_path,
-      backdrop_path: movie.backdrop_path,
-      vote_average: movie.vote_average,
-      release_date: movie.release_date,
-      overview: movie.overview,
-      type: 'movie',
-      genre_ids: movie.genres?.map(g => g.id) || []
-    });
-  }
- };
+    if (isInMyList(movie.id)) {
+      removeFromMyList(movie.id);
+    } else {
+      addToMyList({
+        id: movie.id,
+        title: movie.title,
+        poster_path: movie.poster_path,
+        backdrop_path: movie.backdrop_path,
+        vote_average: movie.vote_average,
+        release_date: movie.release_date,
+        overview: movie.overview,
+        type: "movie",
+        genre_ids: movie.genres?.map((g) => g.id) || [],
+      });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-black text-white overflow-hidden">
       <div className="relative">
         <Link
           to="/"
-          className="fixed top-20 left-4 z-10 bg-black/50 p-2 rounded-full hover:bg-black/70 transition-colors"
+          className="fixed top-20 left-4 z-20 bg-black/50 p-2 rounded-full hover:bg-black/70 transition-colors"
         >
           <ArrowLeft size={24} />
         </Link>
 
         <div className="h-[60vw] md:h-[500px] z-0">
           {trailerKey ? (
-            <div className="aspect-video w-full md:-top-20 absolute">
-              <iframe
-                src={`https://www.youtube.com/embed/${trailerKey}?autoplay=1&mute=${
-                  isMuted ? 1 : 0
-                }&controls=0&loop=1&playlist=${trailerKey}&rel=0&showinfo=0&modestbranding=1`}
+            <div className="aspect-video w-full lg:-top-30 absolute">
+              <YouTube
+                videoId={trailerKey}
+                iframeClassName="aspect-video w-full h-full"
+                opts={{
+                  playerVars: {
+                    autoplay: 1,
+                    controls: 0,
+                    loop: 1,
+                    playlist: trailerKey,
+                    rel: 0,
+                    showinfo: 0,
+                    modestbranding: 1,
+                  },
+                }}
                 title="Trailer Video"
-                allow="autoplay; encrypted-media"
-                allowFullScreen
-                className="w-full h-full rounded-lg"
+                onReady={(event) => {
+                  playerRef.current = event.target;
+                  if (isMuted) {
+                    event.target.mute();
+                  } else {
+                    event.target.unMute();
+                  }
+                }}
               />
             </div>
           ) : (
@@ -195,15 +205,23 @@ const MovieDetail = () => {
                 </button>
 
                 <button
-                  onClick={handleMyListClick}
+                  onClick={handleAddToMyList}
                   className={`p-3 rounded-full border-2 transition-colors ${
                     movie && isInMyList(movie.id)
                       ? "bg-white text-black border-white"
                       : "border-gray-400 hover:border-white"
                   }`}
-                  title={movie && isInMyList(movie.id) ? "Remove from My List" : "Add to My List"}
+                  title={
+                    movie && isInMyList(movie.id)
+                      ? "Remove from My List"
+                      : "Add to My List"
+                  }
                 >
-                  {movie && isInMyList(movie.id) ? <Check size={20} /> : <Plus size={20} />}
+                  {movie && isInMyList(movie.id) ? (
+                    <Check size={20} />
+                  ) : (
+                    <Plus size={20} />
+                  )}
                 </button>
 
                 <button className="p-3 rounded-full border-2 border-gray-400 hover:border-white transition-colors">
@@ -250,7 +268,7 @@ const MovieDetail = () => {
         </div>
       </div>
 
-      <div className="absolute z-50 top-20 md:top-50 lg:top-120 right-4 md:right-8 flex gap-2">
+      <div className="absolute z-10 top-20 md:top-50 lg:top-120 right-4 md:right-8 flex gap-2">
         {trailerKey && (
           <button
             onClick={toggleMute}

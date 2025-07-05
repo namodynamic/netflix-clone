@@ -8,7 +8,26 @@ export interface Movie {
   vote_count?: number;
   first_air_date?: string;
   name?: string;
+  overview?: string;
+  backdrop_path?: string;
 }
+
+export interface Video {
+  site: string;
+  type: string;
+  key: string;
+}
+
+export interface MovieDetailType {
+  id: number;
+  title: string;
+  overview: string;
+  poster_path: string;
+  release_date: string;
+  vote_average: number;
+  backdrop_path: string;
+  genres: Genre[];
+};
 
 export interface Genre {
   name: string;
