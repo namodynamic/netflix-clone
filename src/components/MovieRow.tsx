@@ -61,7 +61,7 @@ const MovieRow = ({
 
   return (
     <div className="mb-8">
-      <h2 className="text-2xl font-bold mb-4 px-8">{title}</h2>
+      <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-4 px-8 sm:mb-6 text-white">{title}</h2>
 
       <div className="relative group">
         {showLeftArrow && (

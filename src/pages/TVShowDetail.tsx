@@ -73,14 +73,14 @@ const TVShowDetail = () => {
 
   if (loading)
     return (
-      <div className="min-h-screen bg-zinc-900 flex items-center justify-center">
+      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
         Loading...
       </div>
     );
 
   if (!tvShow) {
     return (
-      <div className="min-h-screen bg-zinc-900 flex items-center justify-center">
+      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
         <div className="text-white text-xl">TV Show not found</div>
       </div>
     );
@@ -124,7 +124,7 @@ const TVShowDetail = () => {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-900 text-white pt-20">
+    <div className="min-h-screen bg-zinc-950 text-white pt-20">
       <div className="relative">
         <Link
           to="/"
@@ -135,7 +135,7 @@ const TVShowDetail = () => {
 
         <div className="h-[60vw] md:h-[500px] z-0">
           {trailerKey ? (
-            <div className="aspect-video w-full md:-top-20 absolute">
+            <div className="aspect-video w-full md:-top-40 absolute">
               <iframe
                 src={`https://www.youtube.com/embed/${trailerKey}?autoplay=1&mute=${
                   isMuted ? 1 : 0
@@ -153,10 +153,10 @@ const TVShowDetail = () => {
               className="absolute inset-0 w-full h-full object-cover z-0"
             />
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent" />
         </div>
 
-        <div className="relative -mt-22 z-10 px-8">
+        <div className="relative -mt-16 z-10 px-8">
           <div className="flex flex-col-reverse lg:flex-row gap-8">
             <img
               src={`https://image.tmdb.org/t/p/original${

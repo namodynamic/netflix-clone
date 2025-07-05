@@ -60,7 +60,7 @@ const MyList = () => {
         </div>
 
         {myList.length > 0 && (
-          <div className="flex flex-col sm:flex-row gap-4 mt-4 lg:mt-0">
+          <div className="flex flex-wrap sm:flex-row gap-4 mt-4 lg:mt-0">
             <div className="flex bg-gray-800 rounded-lg p-1">
               <button
                 onClick={() => setViewMode("grid")}

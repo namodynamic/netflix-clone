@@ -1,8 +1,9 @@
 @import "tailwindcss";
 
 body {
-    @apply bg-zinc-900 text-zinc-100 min-h-screen;
+    @apply bg-zinc-950 text-zinc-100 min-h-screen;
     font-family: "Helvetica Neue", Arial, sans-serif;
+    overflow-x: hidden;
   }
   
 
@@ -35,4 +36,19 @@ body {
 
 * {
   transition: all 0.2s ease-in-out;
+}
+
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
