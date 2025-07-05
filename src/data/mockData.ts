@@ -196,7 +196,7 @@ export const mockTVShows = [
     },
     next_episode_to_air: null,
     genre_ids: [10759, 9648, 18],
-    release_date: "2021-09-17", // For compatibility
+    release_date: "2021-09-17",
   },
   {
     id: 101,
@@ -258,7 +258,7 @@ export const mockTVShows = [
     },
     next_episode_to_air: null,
     genre_ids: [18, 35],
-    release_date: "2023-01-15", // For compatibility
+    release_date: "2023-01-15",
   },
   {
     id: 102,
@@ -309,11 +309,10 @@ export const mockTVShows = [
     },
     next_episode_to_air: null,
     genre_ids: [18, 10752],
-    release_date: "2022-11-20", // For compatibility
+    release_date: "2022-11-20",
   },
 ]
 
-// Add more TV shows with full details
 for (let i = 103; i <= 130; i++) {
   mockTVShows.push({
     id: i,
@@ -379,3 +378,38 @@ export const mockGames = [
   { id: 7, name: "Into the Dead 2: Unleashed", icon: "https://occ-0-7334-1168.1.nflxso.net/dnm/api/v6/OZJggtSD_YDhN6m75VpSfcXfBD4/AAAABctujXKXxfr_4ETkdWhjFn53QRjNfKeVHxxbYqPhW2Ab8AI9vsd4DGIood_xgsPcPlIrJcc558i2Baa8iqCUrJ5BQI1unDQ4kCJ8mm6Vc1V8ETWqzWj4wo7mfikCBfqT8uYiCw.png?r=0f7" },
   { id: 8, name: "Sonic Mania Plus", icon: "https://occ-0-7334-1168.1.nflxso.net/dnm/api/v6/OZJggtSD_YDhN6m75VpSfcXfBD4/AAAABa888vB0aECcylzH9D2I4Ovh4Y75XPwKAKElh8WcVLnCZdwvwkmGpTgzOBqbP4wliMwIbyFrRPUw2q-oLVdLnwEGAVG4dXotivl3PQWXeaPXBd9S2ncgjljjNPBinVT1K8TFbg.png?r=773" },
 ]
+
+export const footerLinks = [
+    {
+      links: [
+        { name: "Audio Description", href: "#" },
+        { name: "Investor Relations", href: "#" },
+        { name: "Legal Notices", href: "#" },
+        { name: "Jobs", href: "#" },
+      ],
+    },
+    {
+      links: [
+        { name: "Help Center", href: "#" },
+        { name: "Contact Us", href: "#" },
+        { name: "Supported Devices", href: "#" },
+        { name: "Accessibility", href: "#" },
+      ],
+    },
+    {
+      links: [
+        { name: "Gift Cards", href: "#" },
+        { name: "Terms of Use", href: "#" },
+        { name: "Cookie Preferences", href: "#" },
+        { name: "Corporate Information", href: "#" },
+      ],
+    },
+    {
+      links: [
+        { name: "Media Center", href: "#" },
+        { name: "Manage Account", href: "#" },
+        { name: "Add Profile", href: "#" },
+        { name: "Netflix Shop", href: "#" },
+      ],
+    },
+  ]

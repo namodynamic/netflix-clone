@@ -10,13 +10,14 @@ import Search from "./pages/Search";
 import Header from "./components/Header";
 import TVShowDetail from "./pages/TVShowDetail";
 import { MyListProvider } from "./contexts/MyListContext";
+import Footer from "./components/Footer";
 
 
 function App() {
   return (
     <MyListProvider>
       <Router>
-        <div className="bg-zinc-900 min-h-screen">
+        <div className="min-h-screen">
           <Header />
           <Routes>
             <Route path="/" element={<Home />} />
@@ -27,6 +28,7 @@ function App() {
             <Route path="/my-list" element={<MyList />} />
             <Route path="/search" element={<Search />} />
           </Routes>
+           <Footer />
         </div>
       </Router>
     </MyListProvider>
