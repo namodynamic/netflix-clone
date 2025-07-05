@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams, Link } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import {
   Play,
@@ -23,6 +23,7 @@ import { useMyList } from "../contexts/useMyList";
 import YouTube from "react-youtube";
 import type { YouTubePlayer } from "react-youtube";
 import type { MovieDetailType, Video } from "../types";
+import { Link } from "react-router-dom";
 
 
 interface CrewMember {
@@ -36,6 +37,7 @@ interface CastMember {
 
 const MovieDetail = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const playerRef = useRef<YouTubePlayer | null>(null);
   const { addToMyList, removeFromMyList, isInMyList } = useMyList();
   const [movie, setMovie] = useState<MovieDetailType | null>(null);
@@ -125,12 +127,12 @@ const MovieDetail = () => {
   return (
     <div className="min-h-screen bg-black text-white overflow-hidden">
       <div className="relative">
-        <Link
-          to="/"
+        <button
+          onClick={() => navigate(-1)}
           className="fixed top-20 left-4 z-20 bg-black/50 p-2 rounded-full hover:bg-black/70 transition-colors"
         >
           <ArrowLeft size={24} />
-        </Link>
+        </button>
 
         <div className="h-[60vw] md:h-[500px] z-0">
           {trailerKey ? (
