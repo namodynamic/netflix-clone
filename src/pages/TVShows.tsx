@@ -25,7 +25,7 @@ const TVShows = () => {
 
 
   return (
-    <div className="min-h-screen bg-zinc-900 text-white pt-24">
+    <div className="min-h-screen bg-zinc-950 text-white pt-24">
       <div className="px-8 mb-8">
         <h1 className="text-4xl font-bold mb-4">TV Shows</h1>
         <p className="text-gray-400">Discover amazing TV series and shows</p>

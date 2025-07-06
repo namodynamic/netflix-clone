@@ -36,7 +36,7 @@ const TVShowDetail = () => {
   const [trailerKey, setTrailerKey] = useState<string | null>(null);
   const [selectedSeason, setSelectedSeason] = useState<Season | null>(null);
   const [episodes, setEpisodes] = useState<Episode[] | null>(null);
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
   const [activeTab, setActiveTab] = useState<"episodes" | "details">(
     "episodes"
   );

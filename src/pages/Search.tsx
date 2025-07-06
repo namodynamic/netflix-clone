@@ -171,7 +171,7 @@ const Search = () => {
 
   if (!searchQuery.trim()) {
     return (
-      <div className="min-h-screen bg-zinc-900 text-white pt-24 px-8">
+      <div className="min-h-screen bg-zinc-950 text-white pt-24 px-8">
         <div className="max-w-4xl mx-auto text-center py-16">
           <div className="mb-8">
             <div className="w-24 h-24 mx-auto mb-4 bg-gray-800 rounded-full flex items-center justify-center">
@@ -211,9 +211,9 @@ const Search = () => {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-900 text-white pt-24 px-8">
+    <div className="min-h-screen bg-zinc-950 text-white pt-20 md:pt-24 px-8">
      
-      <div className="mb-8">
+      <div className="mb-2 md:mb-4">
         <h1 className="text-3xl font-bold mb-2">Search Results</h1>
         <p className="text-gray-400">
           {loading && currentPage === 1
@@ -224,7 +224,7 @@ const Search = () => {
 
       {/* Filters and Sort */}
       {(results.length > 0 || loading) && (
-        <div className="flex flex-col sm:flex-row gap-4 mb-8">
+        <div className="flex gap-4 mb-8">
           <select
             value={filter}
             onChange={(e) => {
@@ -274,14 +274,12 @@ const Search = () => {
         </div>
       )}
 
-      {/* Error State */}
       {error && (
         <div className="bg-red-600/20 border border-red-600 text-red-400 px-4 py-3 rounded mb-8">
           <p>{error}</p>
         </div>
       )}
 
-      {/* Loading State */}
       {loading && currentPage === 1 ? (
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
           {Array.from({ length: 12 }).map((_, i) => (
@@ -306,7 +304,7 @@ const Search = () => {
                     <img
                       src={getImageUrl(item.poster_path)}
                       alt={displayTitle}
-                      className="w-full h-72 object-cover rounded-lg group-hover:scale-105 transition-transform duration-200"
+                      className="w-full h-42 object-fill rounded-lg group-hover:scale-105 transition-transform duration-200"
                     />
 
                     {/* Content Type Badge */}
@@ -372,7 +370,7 @@ const Search = () => {
 
           {/* Load More Button */}
           {currentPage < totalPages && (
-            <div className="text-center mt-8">
+            <div className="text-center mt-10">
               <button
                 onClick={loadMore}
                 disabled={loading}

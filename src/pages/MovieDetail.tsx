@@ -43,7 +43,7 @@ const MovieDetail = () => {
   const [movie, setMovie] = useState<MovieDetailType | null>(null);
   const [loading, setLoading] = useState(true);
   const [trailerKey, setTrailerKey] = useState<string | null>(null);
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
   const [similarMovies, setSimilarMovies] = useState<MovieDetailType[]>([]);
   const [director, setDirector] = useState<string | null>(null);
   const [cast, setCast] = useState<string[]>([]);
