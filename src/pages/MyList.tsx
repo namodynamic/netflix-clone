@@ -20,7 +20,6 @@ const MyList = () => {
     "dateAdded"
   );
 
-  // Filter and sort the list
   const filteredAndSortedList = myList
     .filter((item) => filterType === "all" || item.type === filterType)
     .sort((a, b) => {
@@ -40,6 +39,8 @@ const MyList = () => {
 
   const getDisplayTitle = (item: Item) =>
     item.title || item.name || "Unknown Title";
+  const getDisplayType = (type: string) =>
+  type === "tv" ? "TV Show" : type === "movie" ? "Movie" : "Unknown";
   const getDisplayDate = (item: Item) =>
     item.release_date || item.first_air_date || "";
   const getImageUrl = (path: string) => {
@@ -96,7 +97,6 @@ const MyList = () => {
               <option value="tv">TV Shows</option>
             </select>
 
-            {/* Sort */}
             <select
               value={sortBy}
               onChange={(e) =>
@@ -109,7 +109,6 @@ const MyList = () => {
               <option value="rating">Rating</option>
             </select>
 
-            {/* Clear All */}
             <button
               onClick={() => {
                 if (
@@ -162,7 +161,7 @@ const MyList = () => {
                   <img
                     src={getImageUrl(item.poster_path)}
                     alt={getDisplayTitle(item)}
-                    className="w-full h-72 object-cover rounded-lg group-hover:scale-105 transition-transform duration-200"
+                    className="w-full h-52 object-fill rounded-lg group-hover:scale-105 transition-transform duration-200"
                   />
                 </Link>
 
@@ -184,7 +183,7 @@ const MyList = () => {
                       {item.vote_average.toFixed(1)}
                     </span>
                     <span className="capitalize text-gray-500">
-                      {item.type}
+                      {getDisplayType(item.type)}
                     </span>
                   </div>
                 </div>

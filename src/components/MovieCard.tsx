@@ -167,6 +167,7 @@ const MovieCard = ({
 
   const handleAddToMyList = () => {
     if (!movie) return;
+    const type = movie.name ? "tv" : "movie";
 
     if (isInMyList(movie.id)) {
       removeFromMyList(movie.id);
@@ -174,12 +175,13 @@ const MovieCard = ({
       addToMyList({
         id: movie.id,
         title: movie.title,
+        name: movie.name,
         poster_path: movie.poster_path,
         backdrop_path: movie.backdrop_path,
         vote_average: movie.vote_average,
         release_date: movie.release_date,
         overview: movie.overview,
-        type: "movie" as "movie" | "tv",
+        type,
       });
     }
   };
