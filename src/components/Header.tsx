@@ -36,13 +36,11 @@ const Header = () => {
     }
   }, [location]);
 
-  // Close mobile menu when route changes
   useEffect(() => {
     setIsMobileMenuOpen(false);
     setIsProfileOpen(false);
   }, [location.pathname]);
 
-  // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Element;
@@ -105,9 +103,8 @@ const Header = () => {
             : "bg-gradient-to-b from-black/80 to-transparent"
         }`}
       >
-        <div className="flex items-center justify-between px-4 lg:px-8 py-3 lg:py-4">
-          <div className="flex items-center space-x-4">
-            {/* Mobile Menu Button */}
+        <div className="max-w-screen-2xl mx-auto flex items-center justify-between px-4 lg:px-8 py-3 lg:py-4 min-w-0">
+          <div className="flex items-center space-x-4 min-w-0 flex-shrink">
             <button
               onClick={() => {
                 setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -146,7 +143,6 @@ const Header = () => {
               </span>
             </Link>
 
-            {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center space-x-1 ml-8">
               {navItems.map((item) => (
                 <Link
@@ -164,7 +160,7 @@ const Header = () => {
             </nav>
           </div>
 
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 min-w-0 flex-wrap flex-shrink-0">
             <div className="relative search-container">
               {isSearchOpen ? (
                 <form onSubmit={handleSearch} className="flex items-center">
@@ -174,15 +170,15 @@ const Header = () => {
                       value={searchQuery}
                       onChange={(e) => handleSearchInputChange(e.target.value)}
                       placeholder="Search movies, TV shows..."
-                      className="bg-black/80 border border-white/30 rounded-lg px-4 py-2 pr-10 text-sm w-48 sm:w-64 lg:w-80 focus:outline-none focus:border-red-500 focus:bg-black/90 transition-all duration-200"
+                      className="bg-zinc-900 border border-white/30 rounded-lg px-3 py-2 pr-8 text-sm w-52 sm:w-64 lg:w-80 focus:outline-none focus:border-red-500 focus:bg-black/90 transition-all duration-200"
                       autoFocus
                     />
                     <button
                       type="button"
                       onClick={() => setIsSearchOpen(false)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
                     >
-                      <X size={16} />
+                      <X size={20} />
                     </button>
                   </div>
                 </form>
@@ -200,7 +196,6 @@ const Header = () => {
               )}
             </div>
 
-            {/* Notifications */}
             <button
               className="p-2 hover:bg-white/10 rounded-lg transition-colors relative"
               aria-label="Notifications"
@@ -209,7 +204,6 @@ const Header = () => {
               <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-600 rounded-full border-2 border-black"></span>
             </button>
 
-            {/* Profile Dropdown */}
             <div className="relative profile-dropdown">
               <button
                 onClick={() => setIsProfileOpen(!isProfileOpen)}
@@ -227,7 +221,6 @@ const Header = () => {
                 />
               </button>
 
-              {/* Profile Dropdown Menu */}
               <div
                 className={`absolute right-0 mt-2 w-56 bg-black/95 backdrop-blur-md border border-gray-700/50 rounded-xl shadow-2xl transition-all duration-200 ${
                   isProfileOpen
@@ -262,7 +255,6 @@ const Header = () => {
           </div>
         </div>
 
-        {/* Mobile Nav Menu */}
         <div
           className={`lg:hidden overflow-hidden transition-all duration-300 ease-in-out ${
             isMobileMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
@@ -289,7 +281,6 @@ const Header = () => {
         </div>
       </header>
 
-      {/* Overlay for mobile menu */}
       {isMobileMenuOpen && (
         <div
           className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden"
