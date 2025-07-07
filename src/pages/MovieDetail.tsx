@@ -25,7 +25,6 @@ import type { YouTubePlayer } from "react-youtube";
 import type { MovieDetailType, Video } from "../types";
 import { Link } from "react-router-dom";
 
-
 interface CrewMember {
   job: string;
   name: string;
@@ -149,6 +148,7 @@ const MovieDetail = () => {
                     rel: 0,
                     showinfo: 0,
                     modestbranding: 1,
+                    disablekb: 1,
                   },
                 }}
                 title="Trailer Video"
@@ -159,6 +159,10 @@ const MovieDetail = () => {
                   } else {
                     event.target.unMute();
                   }
+                }}
+                onEnd={() => {
+                  playerRef.current?.seekTo(0);
+                  playerRef.current?.playVideo();
                 }}
               />
             </div>

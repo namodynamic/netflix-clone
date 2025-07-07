@@ -99,6 +99,7 @@ const Hero = ({ movieId }: HeroProps) => {
                 rel: 0,
                 showinfo: 0,
                 modestbranding: 1,
+                disablekb: 1,
               },
             }}
             title="Trailer Video"
@@ -109,6 +110,10 @@ const Hero = ({ movieId }: HeroProps) => {
               } else {
                 event.target.unMute();
               }
+            }}
+            onEnd={() => {
+              playerRef.current?.seekTo(0);
+              playerRef.current?.playVideo();
             }}
           />
         )}

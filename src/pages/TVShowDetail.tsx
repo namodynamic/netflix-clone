@@ -25,7 +25,6 @@ import { useMyList } from "../contexts/useMyList";
 import YouTube from "react-youtube";
 import type { YouTubePlayer } from "react-youtube";
 
-
 const TVShowDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -157,6 +156,7 @@ const TVShowDetail = () => {
                     rel: 0,
                     showinfo: 0,
                     modestbranding: 1,
+                    disablekb: 1,
                   },
                 }}
                 title="Trailer Video"
@@ -167,6 +167,10 @@ const TVShowDetail = () => {
                   } else {
                     event.target.unMute();
                   }
+                }}
+                onEnd={() => {
+                  playerRef.current?.seekTo(0);
+                  playerRef.current?.playVideo();
                 }}
               />
             </div>
