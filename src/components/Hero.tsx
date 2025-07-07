@@ -55,8 +55,8 @@ const Hero = ({ movieId }: HeroProps) => {
 
   if (isLoading) {
     return (
-      <section className="relative h-screen bg-zinc-900 animate-pulse">
-        <div className="absolute inset-0 bg-gradient-to-r from-zinc-800 to-zinc-700" />
+      <section className="relative h-screen bg-zinc-950 animate-pulse">
+        <div className="absolute inset-0 bg-gradient-to-r from-zinc-900 to-zinc-800" />
       </section>
     );
   }

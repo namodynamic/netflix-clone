@@ -13,17 +13,7 @@ import {
   fetchTopTVShows,
   fetchPopularTVShows,
 } from "../api/tmdb";
-
-type Movie = {
-  id: number;
-  title: string;
-  poster_path: string;
-  vote_average: number;
-  release_date?: string;
-  genre_ids?: number[];
-  vote_count?: number;
-  first_air_date?: string;
-};
+import type { Movie } from "../types";
 
 interface Genre {
   name: string;
@@ -145,7 +135,7 @@ const Home = () => {
     <main className="bg-zinc-950 min-h-screen overflow-hidden">
       {featuredMovie && <Hero movieId={featuredMovie.id} />}
 
-      <div className="relative bottom-0 mt-48 md:mt-36 lg:-top-20 lg:-mt-68  xl:top-10 z-10 pb-8 sm:pb-12">
+      <div className="relative bottom-0 mt-48 md:mt-36 lg:-top-20 lg:-mt-68  xl:top-10 z-10 pb-8 sm:pb-12 mb-8">
         <div className="space-y-6 sm:space-y-8 lg:space-y-12">
           <MovieRow
             title="New on Netflix"
