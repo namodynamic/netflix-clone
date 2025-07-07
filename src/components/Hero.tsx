@@ -1,7 +1,12 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { fetchMovieDetail, fetchMovieVideos } from "../api/tmdb";
+import {
+  fetchMovieDetail,
+  fetchMovieVideos,
+  fetchTVShowDetail,
+  fetchTVShowVideos,
+} from "../api/tmdb";
 import {
   Play,
   Info,
@@ -16,32 +21,68 @@ import type { YouTubePlayer } from "react-youtube";
 import type { Movie, Video } from "../types";
 
 interface HeroProps {
-  movieId: number;
+  mediaId: number;
+  mediaType: "movie" | "tv";
 }
 
-const Hero = ({ movieId }: HeroProps) => {
+const Hero = ({ mediaId, mediaType }: HeroProps) => {
   const playerRef = useRef<YouTubePlayer | null>(null);
-  const [movie, setMovie] = useState<Movie | null>(null);
+  const [media, setMedia] = useState<Movie | null>(null);
   const [trailerKey, setTrailerKey] = useState<string | null>(null);
-  const [isMuted, setIsMuted] = useState<boolean>(true);
+  const [isMuted, setIsMuted] = useState(true);
   const [showVideo, setShowVideo] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
+  const [videoReady, setVideoReady] = useState(false);
 
   useEffect(() => {
     setIsLoading(true);
-    Promise.all([
-      fetchMovieDetail(String(movieId)),
-      fetchMovieVideos(String(movieId)),
-    ])
-      .then(([movieData, videos]) => {
-        setMovie(movieData);
+    const fetchData = async () => {
+      try {
+        let mediaData;
+        let videos;
+
+        if (mediaType === "movie") {
+          mediaData = await fetchMovieDetail(String(mediaId));
+          videos = await fetchMovieVideos(String(mediaId));
+        } else {
+          mediaData = await fetchTVShowDetail(String(mediaId));
+          videos = await fetchTVShowVideos(String(mediaId));
+        }
+
+        setMedia(mediaData);
         const trailer = videos.find(
           (v: Video) => v.site === "YouTube" && v.type === "Trailer"
         );
-        setTrailerKey(trailer ? trailer.key : null);
-      })
-      .finally(() => setIsLoading(false));
-  }, [movieId]);
+        setTrailerKey(trailer?.key ?? null);
+      } catch (err) {
+        console.error("Failed to fetch hero content", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [mediaId, mediaType]);
+
+  useEffect(() => {
+    if (trailerKey === null) {
+      setShowVideo(false);
+      return;
+    }
+
+    const timeout = setTimeout(() => {
+      if (!videoReady) {
+        setShowVideo(false);
+      }
+    }, 5000);
+
+    return () => clearTimeout(timeout);
+  }, [trailerKey, videoReady]);
+
+  useEffect(() => {
+    setVideoReady(false);
+    setShowVideo(true);
+  }, [mediaId, mediaType]);
 
   useEffect(() => {
     if (playerRef.current) {
@@ -52,16 +93,6 @@ const Hero = ({ movieId }: HeroProps) => {
       }
     }
   }, [showVideo]);
-
-  if (isLoading) {
-    return (
-      <section className="relative h-screen bg-zinc-950 animate-pulse">
-        <div className="absolute inset-0 bg-gradient-to-r from-zinc-900 to-zinc-800" />
-      </section>
-    );
-  }
-
-  if (!movie) return null;
 
   const toggleMute = () => {
     setIsMuted((prev) => {
@@ -78,8 +109,23 @@ const Hero = ({ movieId }: HeroProps) => {
   };
 
   const toggleVideoDisplay = () => {
-    setShowVideo(!showVideo);
+    if (showVideo) {
+      setShowVideo(false);
+    } else if (trailerKey) {
+      setShowVideo(true);
+      if (playerRef.current) {
+        playerRef.current.playVideo();
+      }
+    }
   };
+
+  if (isLoading || !media) {
+    return (
+      <section className="relative h-screen bg-zinc-950 animate-pulse">
+        <div className="absolute inset-0 bg-gradient-to-r from-zinc-900 to-zinc-800" />
+      </section>
+    );
+  }
 
   return (
     <section className="relative h-[60vw] bg-zinc-950 z-0">
@@ -102,9 +148,9 @@ const Hero = ({ movieId }: HeroProps) => {
                 disablekb: 1,
               },
             }}
-            title="Trailer Video"
             onReady={(event) => {
               playerRef.current = event.target;
+              setVideoReady(true);
               if (isMuted) {
                 event.target.mute();
               } else {
@@ -115,12 +161,16 @@ const Hero = ({ movieId }: HeroProps) => {
               playerRef.current?.seekTo(0);
               playerRef.current?.playVideo();
             }}
+            onError={(e) => {
+              console.error("YouTube player error", e.data);
+              setShowVideo(false);
+            }}
           />
         )}
 
         <img
-          src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
-          alt={movie.title}
+          src={`https://image.tmdb.org/t/p/original${media.backdrop_path}`}
+          alt={media.title || media.name}
           className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${
             showVideo ? "opacity-0 invisible" : "opacity-100 visible"
           }`}
@@ -137,24 +187,24 @@ const Hero = ({ movieId }: HeroProps) => {
             <div className="mb-4">
               <span className="inline-flex items-center bg-red-600 text-white px-3 py-1.5 text-xs sm:text-sm font-bold rounded-md shadow-lg">
                 <span className="mr-1">N</span>
-                FILM
+                {mediaType === "movie" ? "FILM" : "SERIES"}
               </span>
             </div>
 
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-4 leading-tight text-white drop-shadow-2xl">
-              {movie.title}
+              {mediaType === "movie" ? media.title : media.name}
             </h1>
 
             <p className="text-sm sm:text-base md:text-lg lg:text-xl mb-4 sm:mb-6 text-gray-100 leading-relaxed max-w-xl lg:max-w-2xl line-clamp-3 drop-shadow-lg">
-              {movie.overview}
+              {media.overview}
             </p>
 
             <div className="flex flex-wrap items-center gap-3 sm:gap-4 mb-6 text-xs sm:text-sm">
               <span className="text-green-400 font-bold">
-                {Math.round(movie.vote_average * 10)}% Match
+                {Math.round(media.vote_average * 10)}% Match
               </span>
               <span className="border border-gray-400/60 bg-black/30 px-2 py-1 rounded text-gray-200">
-                {movie.release_date?.split("-")[0]}
+                {(media.release_date || media.first_air_date)?.split("-")[0]}
               </span>
               <span className="border border-gray-400/60 bg-black/30 px-2 py-1 rounded text-gray-200">
                 HD
@@ -171,7 +221,7 @@ const Hero = ({ movieId }: HeroProps) => {
               </button>
 
               <Link
-                to={`/movie/${movieId}`}
+                to={`/${mediaType}/${mediaId}`}
                 className="flex items-center justify-center space-x-2 bg-gray-600/80 backdrop-blur-sm text-white px-6 py-3 rounded-lg font-bold hover:bg-gray-600 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
               >
                 <Info size={20} />

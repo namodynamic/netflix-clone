@@ -9,6 +9,7 @@ import {
   fetchPopularMovies,
   fetchTopRatedMovies,
 } from "../api/tmdb";
+import Hero from "../components/Hero";
 
 const Movies = () => {
   const [loading, setLoading] = useState(true);
@@ -64,6 +65,11 @@ const Movies = () => {
     .sort((a, b) => (b.release_date ?? "").localeCompare(a.release_date ?? ""))
     .slice(0, 15);
 
+  const featuredMovie =
+    topRatedMovies.length > 0
+      ? topRatedMovies[Math.floor(Math.random() * topRatedMovies.length)]
+      : undefined;
+
  
   const RECENT_DAYS = 30;
   const now = new Date();
@@ -78,7 +84,10 @@ const Movies = () => {
     .map((movie) => movie.id);
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white pt-24">
+    <main className="min-h-screen bg-zinc-950 text-white">
+      {featuredMovie && <Hero mediaId={featuredMovie.id} mediaType="movie" />}
+
+      <div className="relative bottom-0 mt-48 md:mt-36 lg:-top-20 lg:-mt-68  xl:top-10 z-10 pb-8 sm:pb-12 mb-8">
       <div className="px-8 mb-8">
         <h1 className="text-4xl font-bold mb-4">Movies</h1>
         <p className="text-gray-400">Explore our vast collection of movies</p>
@@ -118,7 +127,8 @@ const Movies = () => {
         loading={loading}
         top10Ids={topRatedMovies.map((m) => m.id)}
       />
-    </div>
+      </div>
+    </main>
   );
 };
 

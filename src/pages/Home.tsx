@@ -71,10 +71,14 @@ const Home = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  const featuredMovie =
-    popularMovies.length > 0
-      ? popularMovies[Math.floor(Math.random() * popularMovies.length)]
-      : undefined;
+  // Mix movies and TV shows for featured content
+  const allFeaturedContent = [...popularMovies, ...topTvShows];
+  const featuredContent = allFeaturedContent.length > 0
+    ? allFeaturedContent[Math.floor(Math.random() * allFeaturedContent.length)]
+    : undefined;
+  
+  // Determine if featured content is a movie or TV show
+  const featuredMediaType = featuredContent?.title ? 'movie' : 'tv';
   const top10Movies = topRatedMovies.slice(0, 10);
   const newOnNetflix = [...popularMovies]
     .filter((movie) => movie.release_date)
@@ -133,7 +137,7 @@ const Home = () => {
 
   return (
     <main className="bg-zinc-950 min-h-screen overflow-hidden">
-      {featuredMovie && <Hero movieId={featuredMovie.id} />}
+      {featuredContent && <Hero mediaId={featuredContent.id} mediaType={featuredMediaType} />}
 
       <div className="relative bottom-0 mt-48 md:mt-36 lg:-top-20 lg:-mt-68  xl:top-10 z-10 pb-8 sm:pb-12 mb-8">
         <div className="space-y-6 sm:space-y-8 lg:space-y-12">
