@@ -5,7 +5,22 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Search, Bell, User, ChevronDown, Menu, X } from "lucide-react";
 
-const Header = () => {
+interface HeaderProps {
+  selectedProfile?: string | null;
+  onProfileSwitch?: () => void;
+}
+
+const profileMap = {
+  profile1: { name: "Profile 1", color: "bg-blue-500" },
+  family: { name: "Family", color: "bg-red-500" },
+  profile3: { name: "Profile 3", color: "bg-teal-600" },
+  profile4: { name: "Profile 4", color: "bg-yellow-500" },
+  profile5: { name: "Profile 5", color: "bg-pink-500" },
+} as const;
+
+type ProfileKey = keyof typeof profileMap;
+
+const Header = ({ selectedProfile, onProfileSwitch }: HeaderProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -93,6 +108,10 @@ const Header = () => {
     { path: "/movies", label: "Movies" },
     { path: "/my-list", label: "My List" },
   ];
+
+  const profile = selectedProfile
+    ? profileMap[selectedProfile as ProfileKey]
+    : null;
 
   return (
     <>
@@ -230,16 +249,35 @@ const Header = () => {
               >
                 <div className="py-2">
                   <div className="px-4 py-3 border-b border-gray-700/50">
-                    <p className="text-sm font-medium text-white">John Doe</p>
-                    <p className="text-xs text-gray-400">
-                      john.doe@example.com
-                    </p>
+                    {selectedProfile && profile && (
+                      <div className="flex items-center space-x-2">
+                        <div
+                          className={`w-10 h-10 ${profile.color} rounded-lg flex items-center justify-center shadow-lg`}
+                        >
+                          <User size={20} className="text-white" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-white">
+                            {profile.name}
+                          </p>
+                          <p className="text-xs text-gray-400">
+                            Active Profile
+                          </p>
+                        </div>
+                      </div>
+                    )}
                   </div>
+                  <button
+                    onClick={onProfileSwitch}
+                    className="w-full text-left px-4 py-3 text-sm text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
+                  >
+                    Switch Profiles
+                  </button>
                   <button className="w-full text-left px-4 py-3 text-sm text-gray-300 hover:text-white hover:bg-white/10 transition-colors">
                     Manage Profiles
                   </button>
                   <button className="w-full text-left px-4 py-3 text-sm text-gray-300 hover:text-white hover:bg-white/10 transition-colors">
-                    Account
+                    Account Settings
                   </button>
                   <button className="w-full text-left px-4 py-3 text-sm text-gray-300 hover:text-white hover:bg-white/10 transition-colors">
                     Help Center

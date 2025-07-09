@@ -413,3 +413,37 @@ export const footerLinks = [
       ],
     },
   ]
+
+  export const profiles = [
+    {
+      id: "profile1",
+      name: "Profile 1",
+      avatar: "",
+      color: "bg-blue-500",
+    },
+    {
+      id: "family",
+      name: "Family",
+      avatar: "",
+      color: "bg-red-500",
+    },
+    {
+      id: "profile3",
+      name: "Profile 3",
+      avatar: "",
+      color: "bg-teal-600",
+    },
+    {
+      id: "profile4",
+      name: "Profile 4",
+      avatar: "",
+      color: "bg-yellow-500",
+    },
+    {
+      id: "profile5",
+      name: "Profile 5",
+      avatar: "",
+      color: "bg-pink-500",
+    },
+  ]
+
