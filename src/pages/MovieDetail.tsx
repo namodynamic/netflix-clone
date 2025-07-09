@@ -124,7 +124,7 @@ const MovieDetail = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white overflow-hidden">
+    <div className="min-h-screen bg-zinc-950 text-white overflow-hidden">
       <div className="relative">
         <button
           onClick={() => navigate(-1)}
@@ -173,7 +173,7 @@ const MovieDetail = () => {
               className="absolute inset-0 w-full h-full object-cover z-0"
             />
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent" />
         </div>
 
         <div className="relative -mt-5 z-10 px-8">
@@ -286,7 +286,7 @@ const MovieDetail = () => {
         )}
       </div>
 
-      <div className="px-8 mt-16 mb-8 top-10 bg-black">
+      <div className="px-8 mt-16 mb-8 top-10 bg-zinc-950">
         <h2 className="text-2xl font-bold mb-6">More Like This</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {similarMovies.map((similarMovie) => (
