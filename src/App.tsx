@@ -20,6 +20,7 @@ type AppState = "loading" | "profile-selection" | "main-app";
 function App() {
   const [appState, setAppState] = useState<AppState>("loading");
   const [selectedProfile, setSelectedProfile] = useState<string | null>(null);
+  const [profileSwitchPending, setProfileSwitchPending] = useState(false);
 
   useLayoutEffect(() => {
     const savedProfile = localStorage.getItem("netflix-selected-profile");
@@ -28,24 +29,32 @@ function App() {
       setSelectedProfile(savedProfile);
       setAppState("main-app");
     } else {
-      setAppState("loading");
+      setTimeout(() => {
+        setAppState("profile-selection");
+      }, 4000);
     }
   }, []);
 
   const handleLogoAnimationComplete = () => {
-    setAppState("profile-selection");
+    if (profileSwitchPending || selectedProfile) {
+      setProfileSwitchPending(false);
+      setAppState("main-app");
+    } else {
+      setAppState("profile-selection");
+    }
   };
 
   const handleProfileSelect = (profileId: string) => {
     setSelectedProfile(profileId);
     localStorage.setItem("netflix-selected-profile", profileId);
-    setAppState("main-app");
+    setProfileSwitchPending(true);
+    setAppState("loading");
   };
 
   const handleProfileSwitch = () => {
-    setAppState("profile-selection");
-    setSelectedProfile(null);
     localStorage.removeItem("netflix-selected-profile");
+    setSelectedProfile(null);
+    setAppState("profile-selection");
   };
 
   if (appState === "loading") {
